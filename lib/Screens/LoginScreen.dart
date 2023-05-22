@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 import '../RoundedButton.dart';
+import './FeedScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,6 +11,18 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late String _email;
   late String _password;
+
+  void _loginUser(BuildContext context) {
+    // Perform login logic here
+
+    // Assume login is successful
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FeedScreen(currentUserId:_email ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'Enter Your email',
                 ),
                 onChanged: (value) {
-                  _email = value;
+                  setState(() {
+                    _email = value;
+                  });
                 },
               ),
               SizedBox(
@@ -53,7 +67,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'Enter Your password',
                 ),
                 onChanged: (value) {
-                  _password = value;
+                  setState(() {
+                    _password = value;
+                  });
                 },
               ),
               SizedBox(
@@ -62,10 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
               RoundedButton(
                 btnText: 'LOG IN',
                 onBtnPressed: () {
-                  // Perform login action
-                  print('Email: $_email');
-                  print('Password: $_password');
-                  // Implement your login logic here
+                  _loginUser(context); // Call the login method
                 },
               ),
             ],
