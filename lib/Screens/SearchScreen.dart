@@ -10,12 +10,38 @@ class SearchScreen extends StatelessWidget {
         elevation: 0,
         title: Text(
           'Search',
+          
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
+             actions: [
+         
+          PopupMenuButton<String>(
+            color:Color.fromARGB(255, 238, 218, 224),
+            onSelected: (String value) {
+              // Seçilen değeri kullanmak için gerekli işlemleri burada yapabilirsiniz
+              print(value);
+            },
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuEntry<String>>[
+             
+                PopupMenuItem<String>(
+                  value: 'Settings',
+                  child: Text('Settings'),
+                  
+                ),
+                PopupMenuItem<String>(
+                  value: 'Log Out',
+                  child: Text('Log Out'),
+                ),
+              
+              ];
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import '../RoundedButton.dart';
 import './FeedScreen.dart';
 
@@ -14,42 +11,16 @@ class _LoginScreenState extends State<LoginScreen> {
   late String _email;
   late String _password;
 
-  void _loginUser(BuildContext context) async {
-    try {
-      final url = Uri.parse('https://localhost:9001/api/Account/authenticate');
-      final response = await http.post(
-        url,
-        body: json.encode({
-          'email': _email,
-          'password': _password,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
+  void _loginUser(BuildContext context) {
+    // Perform login logic here
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        final token = responseData['data']['jwToken'];
-        final id = responseData['data']['id'];
-        final userName = responseData['data']['userName'];
-        final email = responseData['data']['email'];
-
-        // Perform login logic here
-
-        // Assume login is successful
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FeedScreen(currentUserId: id.toString()),
-          ),
-        );
-      } else {
-        throw Exception('Authentication failed');
-      }
-    } catch (error) {
-      print(error);
-    }
+    // Assume login is successful
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FeedScreen(currentUserId:_email ),
+      ),
+    );
   }
 
   @override

@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
+
 import '../RoundedButton.dart';
 
 
@@ -82,38 +82,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               RoundedButton(
                 btnText: 'Create account',
                 onBtnPressed: () {
-                   createUser();
                   // Implement your logic for creating a user account here
                   // You can use the entered values (_name, _email, _password) to register the user
                 },
               ),
-
-              
             ],
-            
           ),
         ),
       ),
-      
     );
   }
-  Future<void> createUser() async {
-  final url = 'https://localhost:9001/api/Account/register'; // API URL'sini buraya ekleyin
-
-  final response = await http.post(
-    Uri.parse(url),
-    body: json.encode({
-      'name': _name,
-      'email': _email,
-      'password': _password,
-    }),
-    headers: {'Content-Type': 'application/json'},
-  );
-
-  if (response.statusCode == 200) {
-   print("kayıt başarılı");
-  } else {
-   print("kayıt başarısız");
-  }
-}
 }
