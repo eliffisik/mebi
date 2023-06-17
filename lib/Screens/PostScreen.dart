@@ -42,20 +42,18 @@ class PostScreen extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
-        print('Post successful');
-        
+        print('Post successful'); 
         // Tweet posted successfully
-        // You can perform any additional actions here
+    
       } else {
         print('Something went wrong. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
         // Tweet posting failed
-        // You can handle the failure here
       }
     } catch (e) {
       print('Error occurred while posting tweet: $e');
       // Error occurred while posting tweet
-      // You can handle the error here
+  
     }
   }
 
