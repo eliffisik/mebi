@@ -22,7 +22,6 @@ class SearchScreen extends StatelessWidget {
           PopupMenuButton<String>(
             color:Color.fromARGB(255, 238, 218, 224),
             onSelected: (String value) {
-              // Seçilen değeri kullanmak için gerekli işlemleri burada yapabilirsiniz
               print(value);
             },
             itemBuilder: (BuildContext context) {

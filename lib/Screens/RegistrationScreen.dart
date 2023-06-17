@@ -59,17 +59,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         openWebView(confirmEmailUrl);
 
         // Başarılı kayıt durumunda yapılması gereken işlemler
-        // Return the response object
       } else {
         print('Registration failed: ${response.body}');
-
         // Kayıt başarısız olduğunda yapılması gereken işlemler
-        // Return null when registration fails
       }
     } catch (e) {
       print('Error during registration: $e');
       // Kayıt işlemi sırasında bir hata oluştuğunda yapılması gereken işlemler
-      // Return null when an error occurs during registration
+  
     }
   }
 
