@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../RoundedButton.dart';
-import './FeedScreen.dart';
+import 'FeedScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,17 +12,57 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late String _email;
   late String _password;
+   // Variable to store last name
+  Future<void> loginUser() async {
+    String apiUrl =
+        'https://clean-architecture.azurewebsites.net/api/Account/authenticate';
 
-  void _loginUser(BuildContext context) {
-    // Perform login logic here
+    try {
+      var response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          "content-type": "application/json",
+          "accept": "*/*",
+        },
+        body: jsonEncode({
+          'email': _email,
+          'password': _password,
+        }),
+      );
 
-    // Assume login is successful
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FeedScreen(currentUserId:_email ),
-      ),
-    );
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        var token = data['data']['jwToken'];
+        var userId = data['data']['id'];
+        var userName = data['data']['userName'];
+        var firstName = data['data']['firstName']; // Get first name from response
+        var lastName = data['data']['lastName'];// Get last name from response
+        var email = data['data']['email']; 
+         var description = data['data']['description']; 
+        print('login successfully');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FeedScreen(
+              currentUserId: userId,
+              token: token,
+              userName: userName,
+              firstName:firstName??'',
+              lastName:lastName??'',
+              email:email??'',
+            
+           
+            ),
+          ),
+        );
+      } else {
+        print('Login failed: ${response.body}');
+        // Giriş başarısız olduğunda yapılması gereken işlemler
+      }
+    } catch (e) {
+      print('Error during login: $e');
+      // Giriş sırasında bir hata oluştuğunda yapılması gereken işlemler
+    }
   }
 
   @override
@@ -31,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
         centerTitle: true,
         elevation: 0,
         title: Text(
-          'Log in',
+          'Login',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -49,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextField(
                 decoration: InputDecoration(
-                  hintText: 'Enter Your email',
+                  hintText: 'Email',
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -58,12 +100,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
-                  hintText: 'Enter Your password',
+                  hintText: 'Password',
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -72,12 +114,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               SizedBox(
-                height: 40,
+                height: 50,
               ),
               RoundedButton(
-                btnText: 'LOG IN',
+                btnText: 'Login',
                 onBtnPressed: () {
-                  _loginUser(context); // Call the login method
+                  loginUser();
                 },
               ),
             ],

@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import './HomeScreen.dart';
-import './SearchScreen.dart';
+import './AllPostScreen.dart';
 import './ProfileScreen.dart';
-import './FavoriteScreen.dart';
+import './InterestScreen.dart';
 
 class FeedScreen extends StatefulWidget {
   final String currentUserId;
+  final String token;
+  final String userName;
+   final String firstName;
+    final String lastName;
+    final String email;
 
-  const FeedScreen({Key? key, required this.currentUserId}) : super(key: key);
+  FeedScreen({
+    required this.currentUserId,
+    required this.token,
+    required this.userName,
+     required this.firstName,
+      required this.lastName, 
+      required this.email,
+
+  });
 
   @override
   _FeedScreenState createState() => _FeedScreenState();
@@ -16,12 +29,27 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   int _selectedTab = 0;
 
-  List<Widget> _screens = [
-    HomeScreen(),
-    SearchScreen(),
-    FavoriteScreen(),
-    ProfileScreen(),
-  ];
+  List<Widget> _screens = [ ];
+    @override
+  void initState() {
+    super.initState();
+
+    _screens = [
+      HomeScreen(),
+      InterestScreen(),
+      AllPostsScreen(),
+      ProfileScreen(
+        currentUserId: widget.currentUserId,
+  userName: widget.userName,
+      token:widget.token,
+      firstName: widget.firstName,
+      lastName: widget.lastName,
+      email: widget.email,
+
+      ),
+    ];
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +73,7 @@ class _FeedScreenState extends State<FeedScreen> {
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
+            icon: Icon(Icons.post_add),
             label: '',
           ),
           BottomNavigationBarItem(
