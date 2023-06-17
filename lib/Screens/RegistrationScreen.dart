@@ -58,14 +58,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         String confirmEmailUrl = 'http://localhost:57561/api/account/confirm-email/?userId=4722365b-a8da-4c05-a9f9-241aafd62041&code=Q2ZESjhISWFXa0ZIdjZwSXJrSWtZQVZVcWtPV0pROXo1bXZQcGpRemtOTzMyaGI3TGNMV3BpbFNEN1MvcWw0ZlJmODJLME0vNjRJZHlHTERPMTJQZ0JYaEtnRStCZCt4VUVqTitqTVlNcHdqTkN4RTFWSGozVUd4ZlBOOVVaM0VTUnRHYVRSQWp3UVNVRHJCNUxnVmFuMXAvVXBZbzhlK28yWmVMMnpqNHFsUCtsenlUTDM4cFBXZUhFQjFDRkpKb29LUEpxOWh1K1dLeml6NkN6ZjVqeFJpRXFtZzVCaWpsd3g2ekFjVHhtVFBzeUpRUWlWRWFnOGNtNnNvQ3RPWEhXcHNhQT09';
         openWebView(confirmEmailUrl);
 
-        // Başarılı kayıt durumunda yapılması gereken işlemler
+      // Actions to be taken in case of successful registration
       } else {
         print('Registration failed: ${response.body}');
-        // Kayıt başarısız olduğunda yapılması gereken işlemler
+       // Actions to be taken when registration fails
       }
     } catch (e) {
       print('Error during registration: $e');
-      // Kayıt işlemi sırasında bir hata oluştuğunda yapılması gereken işlemler
+     // Actions to be taken when an error occurs during the registration process
   
     }
   }
@@ -237,7 +237,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // WebView AppBar özellikleri
       ),
       body: InAppWebView(
         initialUrlRequest: URLRequest(url: Uri.parse(widget.url)),

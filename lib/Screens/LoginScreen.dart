@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late String _email;
   late String _password;
-   // Variable to store last name
+
   Future<void> loginUser() async {
     String apiUrl =
         'https://clean-architecture.azurewebsites.net/api/Account/authenticate';
@@ -32,9 +32,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        var token = data['data']['jwToken'];
-        var userId = data['data']['id'];
-        var userName = data['data']['userName'];
+        var token = data['data']['jwToken']; // Get token from response
+        var userId = data['data']['id']; // Get userId from response
+        var userName = data['data']['userName']; // Get username from response
         var firstName = data['data']['firstName']; // Get first name from response
         var lastName = data['data']['lastName'];// Get last name from response
         var email = data['data']['email']; 
@@ -57,11 +57,11 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         print('Login failed: ${response.body}');
-        // Giriş başarısız olduğunda yapılması gereken işlemler
+        // Actions to take when login fails
       }
     } catch (e) {
       print('Error during login: $e');
-      // Giriş sırasında bir hata oluştuğunda yapılması gereken işlemler
+    // Actions to be taken when an error occurs during login
     }
   }
 

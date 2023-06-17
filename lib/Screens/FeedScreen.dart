@@ -56,7 +56,7 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
       body: _screens[_selectedTab],
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // Bu satırı ekleyin
+        type: BottomNavigationBarType.fixed, 
         onTap: (index) {
           setState(() {
             _selectedTab = index;
