@@ -49,7 +49,7 @@ class Post {
 
       if (response.statusCode == 200) {
         print('Comment posted successfully');
-        // Burada yorum gönderildikten sonra yapılacak işlemler yer alabilir.
+     
       } else {
         print('Failed to post comment. Status code: ${response.statusCode}');
       }
