@@ -1,6 +1,94 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import './PostScreen.dart';
-class ProfileScreen extends StatelessWidget {
+import './WelcomeScreen.dart';
+
+class Post {
+  String description;
+  String createdTime;
+
+  Post({
+    required this.description,
+    required this.createdTime,
+  });
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      description: json['description'] ?? '',
+      createdTime: json['createdTime'] ?? '',
+    );
+  }
+}
+
+class ProfileScreen extends StatefulWidget {
+  final String currentUserId;
+  final String userName;
+  final String token;
+  final String firstName;
+  final String lastName;
+  final String email;
+  
+  ProfileScreen({
+    required this.currentUserId,
+    required this.userName,
+    required this.token,
+    required this.firstName,
+    required this.lastName,
+    required this.email, 
+   
+     });
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  List<Post> posts = [];
+
+  Future<void> fetchPosts() async {
+    final apiUrl =
+        'https://clean-architecture.azurewebsites.net/api/Post/sender/${widget.email}';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        "accept": "*/*",
+      });
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['data'] is List<dynamic>) {
+          setState(() {
+            posts = (responseData['data'] as List<dynamic>)
+                .map((item) => Post.fromJson(item))
+                .toList();
+          });
+        } else {
+          print('Expected a list of posts. Response data: $responseData');
+        }
+      } else {
+        print('Something went wrong. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred while fetching posts: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+  }
+
+  void logout() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => WelcomeScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,41 +98,33 @@ class ProfileScreen extends StatelessWidget {
         elevation: 0,
         title: Text(
           'Profile',
-          
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
-          
         ),
-             actions: [
-         
+        actions: [
           PopupMenuButton<String>(
             color: Color.fromARGB(255, 238, 218, 224),
             onSelected: (String value) {
-              // Seçilen değeri kullanmak için gerekli işlemleri burada yapabilirsiniz
-              print(value);
+              if (value == 'Log Out') {
+                logout();
+                // Seçilen değeri kullanmak için gerekli işlemleri burada yapabilirsiniz
+              }
             },
             itemBuilder: (BuildContext context) {
               return <PopupMenuEntry<String>>[
-             
-                PopupMenuItem<String>(
-                  value: 'Settings',
-                  child: Text('Settings'),
-                  
-                ),
                 PopupMenuItem<String>(
                   value: 'Log Out',
                   child: Text('Log Out'),
                 ),
-              
               ];
             },
           ),
         ],
       ),
-       body: Padding(
+      body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +141,7 @@ class ProfileScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'John Doe',
+                      ' ${widget.firstName} ${widget.lastName}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -69,7 +149,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'I love Flutter!',
+                      '@${widget.userName}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -79,9 +159,8 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
             SizedBox(height: 20),
-        
             Text(
-              'Tweets',
+              '   My Posts',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -90,11 +169,11 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
-                itemCount: 5, // Replace with your own number of tweets
+                itemCount: posts.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text('Tweet ${index + 1}'),
-                    subtitle: Text('Posted on ${DateTime.now().toString().substring(0, 10)}'),
+                    title: Text(posts[index].description),
+                    subtitle: Text(posts[index].createdTime),
                   );
                 },
               ),
@@ -102,13 +181,19 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-
- floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PostScreen(),
+              builder: (context) => PostScreen(
+                userId: widget.currentUserId,
+                userName: widget.userName,
+                firstName: widget.firstName,
+                lastName: widget.lastName,
+                email: widget.email,
+             
+              ),
             ),
           );
         },
@@ -119,6 +204,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-
-
-
