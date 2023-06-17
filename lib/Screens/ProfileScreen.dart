@@ -110,7 +110,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onSelected: (String value) {
               if (value == 'Log Out') {
                 logout();
-                // Seçilen değeri kullanmak için gerekli işlemleri burada yapabilirsiniz
               }
             },
             itemBuilder: (BuildContext context) {
