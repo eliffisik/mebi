@@ -18,7 +18,7 @@ class PostScreen extends StatelessWidget {
     required this.userName,
     required this.firstName,
     required this.lastName,
-     required this.email, 
+    required this.email,
   });
 
   Future<void> postTweet() async {
@@ -42,9 +42,8 @@ class PostScreen extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
-        print('Post successful'); 
+        print('Post successful');
         // Tweet posted successfully
-    
       } else {
         print('Something went wrong. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
@@ -53,7 +52,6 @@ class PostScreen extends StatelessWidget {
     } catch (e) {
       print('Error occurred while posting tweet: $e');
       // Error occurred while posting tweet
-  
     }
   }
 
@@ -67,15 +65,14 @@ class PostScreen extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Welcome, $firstName!',
-             style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+          Text(
+            'Welcome, $firstName!',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-         
-          
-                       SizedBox(height: 20),
+          SizedBox(height: 20),
           Padding(
             padding: EdgeInsets.all(20),
             child: Column(

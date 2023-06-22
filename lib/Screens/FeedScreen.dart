@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import './HomeScreen.dart';
-import 'AllPostsScreen.dart';
+import './AllPostScreen.dart';
 import './ProfileScreen.dart';
-import './IntererestScreen.dart';
+import './InterestScreen.dart';
 import './UserInterestScreen.dart';
 
 class FeedScreen extends StatefulWidget {

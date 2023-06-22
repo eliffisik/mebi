@@ -35,10 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
         var token = data['data']['jwToken']; // Get token from response
         var userId = data['data']['id']; // Get userId from response
         var userName = data['data']['userName']; // Get username from response
-        var firstName = data['data']['firstName']; // Get first name from response
-        var lastName = data['data']['lastName'];// Get last name from response
-        var email = data['data']['email']; 
-         var description = data['data']['description']; 
+        var firstName =data['data']['firstName']; // Get first name from response
+        var lastName = data['data']['lastName']; // Get last name from response
+        var email = data['data']['email']; // Get email from response
+        var description = data['data']['description']; // Get description from response
+        print(description);
         print('login successfully');
         Navigator.push(
           context,
@@ -47,11 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
               currentUserId: userId,
               token: token,
               userName: userName,
-              firstName:firstName??'',
-              lastName:lastName??'',
-              email:email??'',
-            
-           
+              firstName: firstName ?? '',
+              lastName: lastName ?? '',
+              email: email ?? '',
+              description: description??'',
+              userInterestName: '',
             ),
           ),
         );
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       print('Error during login: $e');
-    // Actions to be taken when an error occurs during login
+      // Actions to be taken when an error occurs during login
     }
   }
 
@@ -114,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               SizedBox(
-                height: 50,
+                height: 30,
               ),
               RoundedButton(
                 btnText: 'Login',
