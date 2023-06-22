@@ -8,6 +8,9 @@ class Post {
   String firstName;
   String lastName;
   String userName;
+   int userId;
+  int tweetId;
+  
   
 
   Post({
@@ -16,6 +19,8 @@ class Post {
     required this.firstName,
     required this.lastName,
      required this.userName,
+      required this.userId,
+    required this.tweetId,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -25,10 +30,12 @@ class Post {
       firstName: json['firstName'] ?? '',
       lastName: json['lastName'] ?? '',
         userName: json['userName'] ?? '',
+         userId: json['userId'] ?? 0,
+    tweetId: json['tweetId'] ?? 0,
     );
   }
 
-  Future<void> comment() async {
+  Future<void> comment({required int userId, required int tweetId}) async {
     const apiUrl = 'https://clean-architecture.azurewebsites.net/api/Comment/Post';
 
     try {
@@ -39,17 +46,17 @@ class Post {
         },
         body: jsonEncode({
           'description':description,
-          'userId': 0,
+          'userId': userId,
           'userName': userName,
           'firstName': firstName,
           'lastName': lastName,
-          'tweetId': 0,
+          'tweetId': tweetId,
         }),
       );
 
       if (response.statusCode == 200) {
         print('Comment posted successfully');
-     
+    
       } else {
         print('Failed to post comment. Status code: ${response.statusCode}');
       }
@@ -80,7 +87,10 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
         final responseData = jsonDecode(response.body);
         if (responseData['data'] is List<dynamic>) {
           setState(() {
-            posts = (responseData['data'] as List<dynamic>).map((item) => Post.fromJson(item)).toList();
+            posts = (responseData['data'] as List<dynamic>).map((item) => Post.fromJson({...item,
+            'userId': item['userId'],
+             'tweetId': item['tweetId'],
+            })).toList();
           });
         } else {
           print('Expected a list of posts. Response data: $responseData');
@@ -156,7 +166,12 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                         actions: [
                           ElevatedButton(
                             onPressed: () {
-                              posts[index].comment();
+                              posts[index].comment(
+                        userId: posts[index].userId,
+                          tweetId: posts[index].tweetId,
+
+
+                              );
                               Navigator.of(context).pop();
                             },
                             style: ButtonStyle(
