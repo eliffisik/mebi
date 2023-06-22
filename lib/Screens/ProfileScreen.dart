@@ -2,57 +2,92 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class PostScreen extends StatelessWidget {
-  final String userId;
+import './PostScreen.dart';
+import './WelcomeScreen.dart';
+
+class Post {
+  String description;
+  String createdTime;
+
+  Post({
+    required this.description,
+    required this.createdTime,
+  });
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      description: json['description'] ?? '',
+      createdTime: json['createdTime'] ?? '',
+    );
+  }
+}
+
+class ProfileScreen extends StatefulWidget {
+  final String currentUserId;
   final String userName;
+  final String token;
   final String firstName;
   final String lastName;
   final String email;
+  final String description;
 
-  String? description;
-  String? interestName;
-  int? senderId;
-
-  PostScreen({
-    required this.userId,
+  ProfileScreen({
+    required this.currentUserId,
     required this.userName,
+    required this.token,
     required this.firstName,
     required this.lastName,
     required this.email,
+    required this.description,
   });
 
-  Future<void> postTweet() async {
-    const apiUrl = 'https://clean-architecture.azurewebsites.net/api/Post/Post';
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  List<Post> posts = [];
+
+  Future<void> fetchPosts() async {
+    final apiUrl =
+        'https://clean-architecture.azurewebsites.net/api/Post/sender/${widget.email}';
 
     try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          "content-type": "application/json",
-          "accept": "*/*",
-        },
-        body: jsonEncode({
-          'description': description,
-          'firstName': firstName,
-          'lastName': lastName,
-          'userName': userName,
-          'interestName': interestName,
-          'senderEmail': email,
-        }),
-      );
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        "accept": "*/*",
+      });
 
       if (response.statusCode == 200) {
-        print('Post successful');
-        // Tweet posted successfully
+        final responseData = jsonDecode(response.body);
+        if (responseData['data'] is List<dynamic>) {
+          setState(() {
+            posts = (responseData['data'] as List<dynamic>)
+                .map((item) => Post.fromJson(item))
+                .toList();
+          });
+        } else {
+          print('Expected a list of posts. Response data: $responseData');
+        }
       } else {
         print('Something went wrong. Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
-        // Tweet posting failed
       }
     } catch (e) {
-      print('Error occurred while posting tweet: $e');
-      // Error occurred while posting tweet
+      print('Error occurred while fetching posts: $e');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+  }
+
+  void logout() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => WelcomeScreen()),
+    );
   }
 
   @override
@@ -60,54 +95,119 @@ class PostScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 129, 82, 169),
-        title: Text('Create Post'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Welcome, $firstName!',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+        centerTitle: true,
+        elevation: 0,
+        title: Text(
+          'Profile',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Description',
-                  ),
-                  onChanged: (value) {
-                    description = value;
-                  },
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Interest Name',
-                  ),
-                  onChanged: (value) {
-                    interestName = value;
-                  },
-                ),
-              ],
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              postTweet();
+        ),
+        actions: [
+          PopupMenuButton<String>(
+            color: Color.fromARGB(255, 238, 218, 224),
+            onSelected: (String value) {
+              if (value == 'Log Out') {
+                logout();
+              }
             },
-            style: ElevatedButton.styleFrom(
-              primary: Color.fromARGB(255, 129, 82, 169),
-            ),
-            child: Text('Send'),
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: 'Log Out',
+                  child: Text('Log Out'),
+                ),
+              ];
+            },
           ),
         ],
       ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 60,
+                  backgroundImage: AssetImage('assets/profile_picture.png'),
+                ),
+                SizedBox(width: 20),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      ' ${widget.firstName} ${widget.lastName}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.purple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      ' @${widget.userName}',
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      '  ${widget.description}',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Text(
+              '   My Posts',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(posts[index].description),
+                    subtitle: Text(posts[index].createdTime),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PostScreen(
+                userId: widget.currentUserId,
+                userName: widget.userName,
+                firstName: widget.firstName,
+                lastName: widget.lastName,
+                email: widget.email,
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.purple,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
